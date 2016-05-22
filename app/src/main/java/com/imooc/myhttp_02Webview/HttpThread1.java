@@ -3,6 +3,7 @@ package com.imooc.myhttp_02Webview;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -49,8 +50,40 @@ public class HttpThread1 extends Thread {
 
     }
 
+
+    public void doPost(){
+        try {
+            URL httpUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) httpUrl.openConnection();
+            conn.setReadTimeout(5000);
+            conn.setRequestMethod("POST");
+
+            OutputStream out = conn.getOutputStream();
+            String content= "name="+name+"&age="+age;
+            out.write(content.getBytes());
+
+            final StringBuffer sb = new StringBuffer();
+            String str;
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+            while ((str = br.readLine())!= null){
+                sb.append(str);
+            }
+
+            System.out.println("result: "+sb.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void run() {
-        doGet();
+//        doGet();
+        doPost();
     }
 }
